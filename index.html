@@ -1,90 +1,184 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-H1WB7D3QMR"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      
-      gtag('config', 'G-H1WB7D3QMR');
-    </script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=EB+Garamond:wght@400&display=swap">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>LFM</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/three@0.153.0/build/three.min.js"></script>
     <style>
-      /* General Styles */
-      body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        font-family: 'EB Garamond', serif;
-        background: #fff;
-        margin: 0;
-        padding: 0;
-        color: #000;
-      }
-      /* Hero Title */
-      .main-title {
-        font-family: 'Cinzel Decorative', serif;
-        font-size: 100px;
-        font-weight: 700;
-        letter-spacing: 10px;
-      }
-      /* Link and Footer Text Styles */
-      .link, .footer-text {
-        font-size: 16px;
-        color: #555;
-        text-decoration: none;
-        margin: 10px 0;
-      }
-      .link:hover {
-        text-decoration: underline;
-      }
-      .footer-text {
-        font-size: 14px;
-        color: #999;
-      }
-      /* Responsive Adjustments */
-      @media (max-width: 767px) {
-        .main-title {
-          font-size: 80px;
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            background-color: #333;
         }
-        .row {
-          margin-top: 1rem;
+
+        h1 {
+            font-size: 100px;
+            font-weight: 900;
+            color: white;
         }
-        .col-12 {
-          padding: 0.5rem 0;
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
         }
-      }
+
+        #text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            font-family: Arial, sans-serif;
+            color: rgb(0, 0, 0);
+            text-align: center;
+        }
+
+        a {
+            color: white;
+            text-decoration: none;
+            padding: 5px;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        p {
+            color: white;
+            font-size: 14px;
+        }
     </style>
-  </head>
-  <body>
-    <div class="container text-center">
-      <h1 class="main-title">LFM</h1>
-      
-      <div class="row justify-content-center my-4">
-        <div class="col-md-3 col-12">
-          <a href="https://tally.so/r/nPvpV0" class="link">Open Application</a>
-        </div>
-        <div class="col-md-3 col-12">
-          <a href="/projects.html" class="link">Open projects</a>
-        </div>
-      </div>
-      
-      <div class="row justify-content-center mt-4">
-        <div class="col-md-3 col-12">
-          <a href="mailto:hello@lfmhc.com" class="link">hello@lfmhc.com</a>
-        </div>
-        <div class="col-md-3 col-12">
-          <p class="footer-text">© 2025. All Rights Reserved.</p>
-        </div>
-      </div>
+</head>
+<body>
+    <div>
+        <h1>LFM</h1>
+        <a href="#">Join</a></br>
+        <a href="#">About</a></br></br>
+        <a href="mailto:hello@lfmhc.com">hello@lfmhc.com</a></br></br>
+        <p>© 2025. All Rights Reserved.</p>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-wH+hBfyJXsW2fSfsIGffvZJ7hI7LfS+rtn4YoocU6ipU+Po5Bz+BHEM+2cwZ9ZZ5" crossorigin="anonymous"></script>
-  </body>
+
+    <script>
+        const config = {
+            numPillars: 4,
+            spacing: 10,
+            pillarHeight: 5,
+            pillarRadius: 0.8,
+            baseHeight: 1,
+            floorLevel: 5,  // New parameter to set the floor level
+            pillarGeometry: new THREE.CylinderGeometry(0.8, 0.8 / 1.6, 5, 4),
+            baseGeometry: new THREE.CylinderGeometry(0.8 / 1.6, 0.8, 1, 4),
+            goldMaterial: new THREE.MeshStandardMaterial({
+                color: 0xffcc00,
+                metalness: 0.1,
+                roughness: 0.9,
+                emissive: 0xaaaa00,
+            }),
+            lightColor: 0xffcc00,
+            lightIntensityRange: { min: 0.5, max: 2 },  // Flickering range for intensity
+            lightDistance: 100,
+            flickerSpeed: 0.05,  // Speed of the flicker (lower is faster)
+            fogNear: 10,
+            fogFar: 30,
+            fogColor: 0x222222 // The same color as the background
+        };
+
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x222222);
+
+        // Adding fog to the scene
+        scene.fog = new THREE.Fog(config.fogColor, config.fogNear, config.fogFar);
+
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 5, 15);
+
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setAnimationLoop(animate);
+        document.body.appendChild(renderer.domElement);
+        renderer.setClearColor(0x000000, 1);
+
+        const directionalLight = new THREE.DirectionalLight(config.goldMaterial.color, 1);
+        directionalLight.position.set(0, 5, 5);
+        scene.add(directionalLight);
+
+        function createPillar() {
+            const pillarGroup = new THREE.Group();
+
+            const base = new THREE.Mesh(config.baseGeometry, config.goldMaterial);
+            base.position.y = -config.pillarHeight / 2;
+
+            const pillarMesh = new THREE.Mesh(config.pillarGeometry, config.goldMaterial);
+
+            pillarGroup.add(base, pillarMesh);
+
+            // Add flickering light at the top of the pillar
+            const light = new THREE.PointLight(config.lightColor, 1, config.lightDistance);
+            light.position.set(0, config.pillarHeight / 2, 0);  // Position at the top of the pillar
+            pillarGroup.add(light);
+
+            pillarGroup.light = light; // Keep reference to light for animation
+
+            return pillarGroup;
+        }
+
+        function createPillarsOnFloor() {
+            const gridSize = Math.ceil(Math.sqrt(config.numPillars));
+            const offsetX = (gridSize - 1) * config.spacing / 2;
+            const offsetZ = (gridSize - 1) * config.spacing / 2;
+
+            let pillarCount = 0;
+
+            for (let i = 0; i < gridSize; i++) {
+                for (let j = 0; j < gridSize; j++) {
+                    if (pillarCount < config.numPillars) {
+                        const x = i * config.spacing - offsetX;
+                        const z = j * config.spacing - offsetZ;
+                        const pillarGroup = createPillar();
+                        pillarGroup.position.set(x, config.floorLevel, z);  // Set the floor level
+                        scene.add(pillarGroup);
+                        pillarCount++;
+                    }
+                }
+            }
+        }
+
+        createPillarsOnFloor();
+
+        let lastTime = 0;
+
+        function animate(time) {
+            // Flicker effect: change light intensity randomly within the given range
+            const delta = time - lastTime;
+            if (delta > config.flickerSpeed * 1000) {
+                scene.children.forEach(child => {
+                    if (child.light) {
+                        child.light.intensity = Math.random() * (config.lightIntensityRange.max - config.lightIntensityRange.min) + config.lightIntensityRange.min;
+                    }
+                });
+                lastTime = time;
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        window.addEventListener('resize', () => {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            renderer.setSize(width, height);
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+        });
+    </script>
+</body>
 </html>
